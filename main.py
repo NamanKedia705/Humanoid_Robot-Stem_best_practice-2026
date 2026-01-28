@@ -1,15 +1,15 @@
-from motor_control import forward, backward, left, right, stop
+from motor_control import forward, stop
+from ir_sensor import ir_triggered
+import time
 
-forward()
-# robot should move forward
+print("IR safety test running")
 
-stop()
+while True:
+    if ir_triggered():
+        stop()
+        print("IR TRIGGERED → STOP")
+    else:
+        forward()
+        print("SAFE → FORWARD")
 
-left()
-stop()
-
-right()
-stop()
-
-backward()
-stop()
+    time.sleep(0.1)
