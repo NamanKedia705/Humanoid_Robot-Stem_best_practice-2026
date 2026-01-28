@@ -1,30 +1,33 @@
-from motor_control import forward, stop
+from motor_control import forward, backward, left, right, stop
 from ir_sensor import ir_triggered
 from ultrasonic import get_front_distance, get_rear_distance
+from voice_control import get_voice_command
 import time
 
-STOP_DISTANCE = 30  # cm
+STOP_DISTANCE = 30
 
-print("IR + Dual Ultrasonic safety running")
+print("Voice control + safety running")
 
 while True:
-    front_dist = get_front_distance()
-    rear_dist = get_rear_distance()
+    command = get_voice_command()
 
-    if ir_triggered():
+    front = get_front_distance()
+    rear = get_rear_distance()
+
+    if ir_triggered() or front < STOP_DISTANCE or rear < STOP_DISTANCE:
         stop()
-        print("IR TRIGGERED → STOP")
+        print("SAFETY STOP")
+        continue
 
-    elif front_dist < STOP_DISTANCE or rear_dist < STOP_DISTANCE:
-        stop()
-        print(
-            f"US STOP → Front: {front_dist} cm | Rear: {rear_dist} cm"
-        )
-
-    else:
+    if "forward" in command:
         forward()
-        print(
-            f"SAFE → Front: {front_dist} cm | Rear: {rear_dist} cm"
-        )
+    elif "back" in command:
+        backward()
+    elif "left" in command:
+        left()
+    elif "right" in command:
+        right()
+    elif "stop" in command:
+        stop()
 
     time.sleep(0.1)
