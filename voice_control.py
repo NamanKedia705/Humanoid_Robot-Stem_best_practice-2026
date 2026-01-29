@@ -17,7 +17,7 @@ def listen_and_route():
         command = recognizer.recognize_google(audio).lower()
         print("Heard:", command)
 
-        # 🔑 WAKE WORD CHECK
+        # WAKE WORD CHECK
         if WAKE_WORD not in command:
             return  # ignore everything else
 
@@ -27,3 +27,23 @@ def listen_and_route():
         if command == "":
             speak("Yes?")
             return
+        # 1️⃣ Navigation commands
+        if "navigate forward" in command:
+            speak("Starting navigation.")
+            navigate_forward()
+            return
+
+        # 2️⃣ Movement commands
+        if command in ["forward", "back", "left", "right", "stop"]:
+            route_command("jarvis", command)
+            return
+
+        # 3️⃣ AI / assistant commands
+        handled = handle_ai_command(command)
+        if handled:
+            return
+
+        speak("Sorry, I did not understand that.")
+
+    except:
+        print("Voice not understood")
