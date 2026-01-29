@@ -1,5 +1,6 @@
 import threading
 import os
+import time
 
 def start_voice():
     os.system("python3 voice_runner.py")
@@ -17,5 +18,8 @@ if __name__ == "__main__":
     threading.Thread(target=start_app, daemon=True).start()
     threading.Thread(target=start_screen, daemon=True).start()
 
-    while True:
-        pass
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Shutting down system")
