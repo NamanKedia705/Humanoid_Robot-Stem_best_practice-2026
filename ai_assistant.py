@@ -20,9 +20,7 @@ def handle_ai_command(command: str) -> bool:
     command = command.lower()
 
     if "who are you" in command:
-        speak(
-            "I am a transportation assistance robot designed to help users move safely."
-        )
+        speak("I am Jarvis, your transportation assistance robot.")
         return True
 
     if "what can you do" in command:
@@ -32,9 +30,7 @@ def handle_ai_command(command: str) -> bool:
         return True
 
     if "help" in command:
-        speak(
-            "You can say forward, back, left, right, stop, or say navigate forward."
-        )
+        speak("At your service. You can ask me to move or help you navigate.")
         return True
 
     if "time" in command:
