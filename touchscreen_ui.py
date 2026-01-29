@@ -1,5 +1,7 @@
 import pygame
 from command_router import route_command
+from ir_sensor import ir_triggered
+from ultrasonic import get_front_distance
 
 pygame.init()
 
@@ -21,8 +23,19 @@ buttons = {
     "right": pygame.Rect(500, 150, 100, 80),
     "back": pygame.Rect(350, 250, 100, 80),
 }
+def get_status():
+    if ir_triggered():
+        return "BLOCKED (IR)", (255, 0, 0)
+
+    if get_front_distance() < 30:
+        return "BLOCKED (Obstacle)", (255, 0, 0)
+
+    return "SAFE", (0, 180, 0)
 
 def draw():
+    status_text, status_color = get_status()
+    status_label = font.render(f"STATUS: {status_text}", True, status_color)
+    screen.blit(status_label, (20, 10))
     screen.fill(WHITE)
     for text, rect in buttons.items():
         color = RED if text == "stop" else GRAY
