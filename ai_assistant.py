@@ -1,40 +1,55 @@
 """
 ai_assistant.py
-Handles AI-style voice interaction (Q&A, info, help).
-Inspired by Gideon-3 but adapted for robot integration.
+Handles AI-style voice interaction and intent routing for Jarvis.
 """
 
 import datetime
 from speech_output import speak
+from llm_client import ask_llm
+from command_router import route_command
+from navigation import navigate_forward
 
 def get_time():
     return datetime.datetime.now().strftime("%H:%M")
 
 def handle_ai_command(command: str) -> bool:
     """
-    Handles AI / conversational commands.
-    Returns True if command was handled here.
-    Returns False if command should be treated as movement/nav.
+    Handles AI + intent-based commands.
+    Returns True if handled.
     """
 
     command = command.lower()
 
-    if "who are you" in command:
-        speak("I am Jarvis, your transportation assistance robot.")
+    # 🛑 Highest priority: STOP (always override)
+    if "stop" in command:
+        route_command("jarvis", "stop")
+        speak("Stopping.")
         return True
 
-    if "what can you do" in command:
-        speak(
-            "I can move using voice, touchscreen, or mobile app, and I prioritize safety."
-        )
+    # 🧭 Navigation intents
+    if "navigate" in command and "forward" in command:
+        speak("Starting assisted navigation.")
+        navigate_forward()
         return True
 
-    if "help" in command:
-        speak("At your service. You can ask me to move or help you navigate.")
+    # 🕹️ Movement intents
+    if "forward" in command:
+        route_command("jarvis", "forward")
         return True
 
-    if "time" in command:
-        speak(f"The time is {get_time()}")
+    if "back" in command or "backward" in command:
+        route_command("jarvis", "back")
         return True
 
-    return False
+    if "left" in command:
+        route_command("jarvis", "left")
+        return True
+
+    if "right" in command:
+        route_command("jarvis", "right")
+        return True
+
+    # 🤖 Conversational / AI queries
+    reply = ask_llm(command)
+    speak(reply)
+    return True
