@@ -42,3 +42,5 @@ def route_command(source, command):
     elif command == "right":
         right()
         speak("Turning right")
+    with open("command_log.txt", "a") as f:
+        f.write(f"{source},{command}\n")
