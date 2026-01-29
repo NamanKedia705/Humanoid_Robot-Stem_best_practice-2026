@@ -1,7 +1,11 @@
 import speech_recognition as sr
 from command_router import route_command
+from ai_assistant import handle_ai_command
+from navigation import navigate_forward
+from command_router import route_command
 
 recognizer = sr.Recognizer()
+WAKE_WORD = "jarvis"
 
 def listen_and_route():
     with sr.Microphone() as source:
@@ -13,16 +17,13 @@ def listen_and_route():
         command = recognizer.recognize_google(audio).lower()
         print("Heard:", command)
 
-        if "forward" in command:
-            route_command("voice", "forward")
-        elif "back" in command:
-            route_command("voice", "back")
-        elif "left" in command:
-            route_command("voice", "left")
-        elif "right" in command:
-            route_command("voice", "right")
-        elif "stop" in command:
-            route_command("voice", "stop")
+        # 🔑 WAKE WORD CHECK
+        if WAKE_WORD not in command:
+            return  # ignore everything else
 
-    except:
-        print("Voice not understood")
+        # Strip wake word
+        command = command.replace(WAKE_WORD, "").strip()
+
+        if command == "":
+            speak("Yes?")
+            return
